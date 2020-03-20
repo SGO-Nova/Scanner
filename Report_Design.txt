@@ -1,0 +1,9 @@
+Ryan Browning, Blake McLaughlin
+Group 34
+Report/Design
+
+1)	Data structures:
+a.	Linked lists – To hold all the token values until the end
+
+2)	Functions
+Tokenizer function – 
