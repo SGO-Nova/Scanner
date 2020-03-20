@@ -12,4 +12,18 @@ Tokenizer function – Takes in what state we are currently at, takes in the cur
 3) Pseudocode
 
 Tokenizer(int state, char character, char token[])
+Function_A. Main_Function - 
+Data: //Enter the variables and parameters once decided on.
+Purpose - The main function will be used to take the file that includes the token tree and send it to the reading file function to take the token tree, read it and interpret the tree.
+Expected Output:
+Function_B. File_Reading_Function - 
+Data: 
+Purpose: The purpose of the file reading function would be able to read the original token tree file and use the interpreter function to go through the original tree and reorder it with the usage of that. 
+Expected Output:
+Function_C. Interpreter - 
+Data: 
+Purpose: The purpose of the Interpreter function will be to interpret the signs that tokens encounter throughout the token tree, signs include characters such as -, +, (, ), [, ], *.
+Expected Output: 
 
+
+4) Test Cases 
