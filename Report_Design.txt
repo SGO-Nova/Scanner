@@ -3,27 +3,77 @@ Group 34
 Report/Design
 
 1)	Data structures:
-a.	Linked lists – To hold all the token values until the end
-b.  Array - To store the current token. *This could be a linked list
+a.	Linked lists – To hold all the token values until the end, also to hold the current token
+b.	Multi-Child tree - For the tokenizer tree
+c.  Array - To store the contents of the text file
 
 2)	Functions
-Tokenizer function – Takes in what state we are currently at, takes in the current character we are at, takes in the current token. [ie. Tokenizer(16, n, "Toke")]. in the function we can do if/else statments that will determine it's new state and continue to the next character.
+Tokenizer(int state, char character, char token[])
+Function_A. Main_Function - 
+Data: int argc(Numbers of arguments given), char *argv[](The argument array, this will be the input text file) //Enter the variables and parameters once decided on.
+Purpose - The main function will be used to take the file that includes the token tree and send it to the reading file function to take the token tree, read it and interpret the tree.
+          It will also initialize the token tree
+Expected Output: Implicitly: The tokenizer tree
+                 Explicitly: The file argv[argc - 1]
+				 
+Function_B. File_Reading_Function - 
+Data: char line[](The current line the scanner is on), char character(The current character the scanner is at, used to pass to interpreter tree)
+Purpose: The purpose of the file reading function would be able to read the original text file and get every character to send to the interpreter tree function
+Expected Output: char Character
+
+Function_C. Interpreter_Function - 
+Data: char Character(taken in from File_Reading_Function)
+Purpose: The purpose of the Interpreter function will be to interpret the signs that tokens encounter throughout the token tree, signs include characters such as -, +, (, ), [, ], *, /.
+Expected Output: The expected outcome of the interpreter function is for it to be used to interpret which of the nodes equal the characters mentioned above. 
 
 3) Pseudocode
 
-Tokenizer(int state, char character, char token[])
-Function_A. Main_Function - 
-Data: //Enter the variables and parameters once decided on.
-Purpose - The main function will be used to take the file that includes the token tree and send it to the reading file function to take the token tree, read it and interpret the tree.
-Expected Output:
-Function_B. File_Reading_Function - 
-Data: 
-Purpose: The purpose of the file reading function would be able to read the original token tree file and use the interpreter function to go through the original tree and reorder it with the usage of that. 
-Expected Output:
-Function_C. Interpreter - 
-Data: 
-Purpose: The purpose of the Interpreter function will be to interpret the signs that tokens encounter throughout the token tree, signs include characters such as -, +, (, ), [, ], *, /.
-Expected Output: The expected outcome of the interpreter function is for it to be used to interpret which of the nodes equal the characters mentioned above. 
+Start of .cpp file{
+Create a struct_tree 
+	character value
+	terminator bool/int 
+	pointer to child and sibling
+Create a struct_tokens
+	string token value
+	pointer to token linked list and next token 
+Create a struct current_token
+	character value
+	pointer to next character of token
+	
+struct_tree *start, *current_state;
+struct_tokens *beginning;
+struct current_token *token_beginning, *current_token_end;
+}
+	
+main_function{
+Initialize Token_tree
+	make nodes for every state and it's children and their siblings
+Try to open .txt file
+	#Checks to make sure the correct text file is given
+Send file to File_Reading_Function
+}
+
+File_Reading_Function{
+Open the file given
+Move all lines of the file into a single array
+for(int i = 0; i < array.length(); i++)
+	Interpreter(array[i])
+}
+
+Interpreter_Function{
+Start at head of struct_tree
+pointer = tree.start
+if(pointer.character_value != array[i])
+	pointer = pointer -> child
+else
+	store character vlaue in struct current_token
+	move pointer to next node for current_token
+	break
+while(pointer.character_value != array[i])
+	pointer = pointer -> sibling
+	if(pointer == NULL)
+		syntax error
+	//////// NOT FINISHED ////////
 
 
 4) Test Cases 
