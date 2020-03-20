@@ -4,6 +4,12 @@ Report/Design
 
 1)	Data structures:
 a.	Linked lists – To hold all the token values until the end
+b.  Array - To store the current token. *This could be a linked list
 
 2)	Functions
-Tokenizer function – 
+Tokenizer function – Takes in what state we are currently at, takes in the current character we are at, takes in the current token. [ie. Tokenizer(16, n, "Toke")]. in the function we can do if/else statments that will determine it's new state and continue to the next character.
+
+3) Pseudocode
+
+Tokenizer(int state, char character, char token[])
+
