@@ -22,8 +22,8 @@ Purpose: The purpose of the file reading function would be able to read the orig
 Expected Output:
 Function_C. Interpreter - 
 Data: 
-Purpose: The purpose of the Interpreter function will be to interpret the signs that tokens encounter throughout the token tree, signs include characters such as -, +, (, ), [, ], *.
-Expected Output: 
+Purpose: The purpose of the Interpreter function will be to interpret the signs that tokens encounter throughout the token tree, signs include characters such as -, +, (, ), [, ], *, /.
+Expected Output: The expected outcome of the interpreter function is for it to be used to interpret which of the nodes equal the characters mentioned above. 
 
 
 4) Test Cases 
