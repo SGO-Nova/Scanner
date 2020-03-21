@@ -26,17 +26,18 @@ Data: char Character(taken in from File_Reading_Function)
 Purpose: The purpose of the Interpreter function will be to interpret the signs that tokens encounter throughout the token tree, signs include characters such as -, +, (, ), [, ], *, /.
 Expected Output: The expected outcome of the interpreter function is for it to be used to interpret which of the nodes equal the characters mentioned above. 
 
-3) Pseudocode
+*Pseudocode*
 
 Start of .cpp file{
 Create a struct_tree 
 	character value
+	token value
 	terminator bool/int 
 	pointer to child and sibling
 Create a struct_tokens
-	string token value
+	string token_value
 	pointer to token linked list and next token 
-Create a struct current_token
+Create a struct_current_token
 	character value
 	pointer to next character of token
 	
@@ -51,29 +52,68 @@ Initialize Token_tree
 Try to open .txt file
 	#Checks to make sure the correct text file is given
 Send file to File_Reading_Function
+Output the 
 }
 
 File_Reading_Function{
 Open the file given
 Move all lines of the file into a single array
+struct_tree *current_state = struct_tree *start
 for(int i = 0; i < array.length(); i++)
 	Interpreter(array[i])
 }
 
 Interpreter_Function{
-Start at head of struct_tree
-pointer = tree.start
-if(pointer.character_value != array[i])
-	pointer = pointer -> child
+Check with current state's child and its siblings 
+if(state.character_value == array[i])
+	Peek at next character value
+	Check this state's child and its siblings character_value and compare to next character's value
+	if(next character_value is the child of this state or a sibling of the child)
+		Save character into linked list for current_token
+	else
+		if(terminator int == 1)
+			Save character into linked list for current_token
+			Add this linked list to struct_tokens
+			Check if it's a 'read' or 'write' token
+				(if not)Store the tree.token value in struct_token string token_value
+			Create new Linked list struct_current_token
+			Move pointers to correct places fo all structs
+		else
+			Parse error
 else
-	store character vlaue in struct current_token
-	move pointer to next node for current_token
-	break
-while(pointer.character_value != array[i])
-	pointer = pointer -> sibling
-	if(pointer == NULL)
-		syntax error
-	//////// NOT FINISHED ////////
+	Parse error
+
+4) Test Cases (The data inside of the text files [enclosed by ```])
+
+```
+	This := 4 * five
+x := /* this is a comment */ y
+``` This just tests out that it will read tokens correctly on a normal text
+
+```
+x = 5
+```This checks for the parse error when the assign isn't called correctly
+
+```
+ // This is a comment
+	/* This is also
+a comment*/
+/***/ /* <- that was a comment*/
+w := ( 5 + 2 )
+```This makes sure the comment section of the tree is made correctly
+
+```
+3+4.2
+// This should still give number,plus,number
+```This will test to see that it still gets the tokens no matter the spacing 
+
+```
+read
+
+x := 5
+
+write
+```This makes sure it can recoginize the 'read' and 'write' tokens
 
 
-4) Test Cases 
+
