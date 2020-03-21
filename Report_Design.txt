@@ -83,7 +83,7 @@ if(state.character_value == array[i])
 else
 	Parse error
 
-4) Test Cases (The data inside of the text files [enclosed by ```])
+3) Test Cases (The data inside of the text files [enclosed by ```])
 
 ```
 	This := 4 * five
@@ -115,5 +115,5 @@ x := 5
 write
 ```This makes sure it can recoginize the 'read' and 'write' tokens
 
-
+4) N/A
 
