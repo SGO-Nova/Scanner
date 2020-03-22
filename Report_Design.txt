@@ -36,7 +36,7 @@ Create a struct_tree
 	pointer to child and sibling
 Create a struct_tokens
 	string token_value
-	pointer to token linked list and next token 
+	pointer to token linked list(optional) and next token 
 Create a struct_current_token
 	character value
 	pointer to next character of token
@@ -52,7 +52,7 @@ Initialize Token_tree
 Try to open .txt file
 	#Checks to make sure the correct text file is given
 Send file to File_Reading_Function
-Output the 
+Output the list of tokens to console 
 }
 
 File_Reading_Function{
@@ -114,6 +114,10 @@ x := 5
 
 write
 ```This makes sure it can recoginize the 'read' and 'write' tokens
+
+```
+	/* This will test the single line code*/ (x := 5) y := 45 - x * (1234567890 / 0987654321)
+```This tests that a long single line code will work
 
 4) N/A
 
