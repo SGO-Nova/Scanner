@@ -22,7 +22,7 @@ struct saved_token{
 
 struct current_token{
 	int token;           //the character for the token(ASCII value)
-	current_token *next;  //the next character for the token
+	current_token *next;  //the next character for the token.
 };
 
 struct tree_Node *start_tree, *current_tree;
