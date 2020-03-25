@@ -1,0 +1,8 @@
+// This test text should give out: (read, id, id, assign, number, div, id, write, id)
+
+read x
+
+x := 5 / y
+
+write y
+

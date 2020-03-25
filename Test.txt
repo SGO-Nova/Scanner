@@ -1,4 +1,0 @@
-This is a test File!
-	This line has a tab.
-
-Here's the fourth line!
