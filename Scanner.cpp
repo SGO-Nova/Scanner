@@ -77,6 +77,7 @@ void Reading_file(char *file){
 	
 	while(fgets(str, MAX_CHAR, fp) != NULL){
 		for(int i = 0; i < strlen(str); i++){
+			cout << str[i] << ": " << (int)str[i] << endl;
 			if(str[i+1] != '\0')
 				Interpreter(str[i], str[i+1]);
 			else
