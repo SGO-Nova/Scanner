@@ -2,6 +2,7 @@
 #include <fstream>
 #include <stdio.h>
 #include <cstring>
+#include <stdlib.h>
 //#include "Token_Tree.h"
 
 #define MAX_CHAR 1000
@@ -17,25 +18,255 @@ struct tree_Node{
 };
 
 struct saved_token{
-	char token;               //name of the token
+	char token[10];       //name of the token
 	saved_token *next;        //next token for the file
 };
 
-struct current_token{
-	int token;                //the character for the token(ASCII value)
-	current_token *next;      //the next character for the token.
-};
 
 struct tree_Node *start_tree, *current_tree, *tmp;
 struct saved_token *start_saved, *current_saved;
-struct current_token *start_current, *current_current;
 
 void Reading_file(char *file);
-void Interpreter(char character);
+void Interpreter(char character, char next);
 void Tree_Create(int state, char character[10], int terminator);
+void Tree_Process();
+void Create_token(char token_type[10]);
 
 int main(int argc, char *argv[]){
-	char arr_char[10][10] = {" ", "div", "lparen", "rparen", "plus", "minus", "times", "assign", "number", "id"};
+	FILE *fp;
+	fp = fopen(argv[argc - 1], "r");
+	char filename[MAX_CHAR];
+	
+
+	if(fp == NULL){
+		cout << "Unable to open the file designated: " << argv[argc-1] << endl;
+		cout << "Ending Program" << endl;
+		exit(1);
+	}
+	else{
+		Tree_Process();
+		current_tree = start_tree;
+		Reading_file(argv[argc-1]);
+	}
+	
+	//for later use when printing out the tokens
+	
+	
+	current_saved = start_saved;
+	while(current_saved != NULL){
+		cout << current_saved -> token;
+		if(current_saved -> next != NULL){
+			cout << ", ";
+		}
+		current_saved = current_saved -> next;
+	}
+	
+	cout << endl;
+	
+	return 0;
+}
+
+void Reading_file(char *file){
+	char str[MAX_CHAR];
+	FILE *fp;
+	fp = fopen(file, "r");
+	
+	while(fgets(str, MAX_CHAR, fp) != NULL){
+		for(int i = 0; i < strlen(str); i++){
+			if(str[i+1] != NULL)
+				Interpreter(str[i], str[i+1]);
+			else
+				Interpreter(str[i], -1);
+		}
+	}
+}
+
+void Interpreter(char character, char next){
+	/*
+	cout << current_tree -> state << ": " << endl;
+	cout << "Current: " << character << ": " << (int)character << endl;
+	cout << "Next: " << next << ": " << (int)next << endl;\
+	cout << endl;
+	*/
+	int current_ascii = (int)character;
+	int next_ascii = (int)next;
+	if(current_tree -> state == 1){
+		if(current_ascii == 9 || current_ascii == 10 || current_ascii == 32)
+			current_tree = start_tree;
+		else if(current_ascii == 47){
+			current_tree = current_tree -> child;
+			while(current_tree -> state != 2){
+				current_tree = current_tree -> sibling;
+			}
+			if(next_ascii != 47 && next_ascii != 42){
+				Create_token(current_tree -> name);
+				cout << "Created a 'div' Token" <<endl;
+			}
+		}
+		else if(current_ascii == 40){
+			current_tree = current_tree -> child;
+			while(current_tree -> state != 6){
+				current_tree = current_tree -> sibling;
+			}
+			Create_token(current_tree -> name);
+			cout << "Created a 'lparen' Token" <<endl;
+			current_tree = start_tree;
+		}
+		else if(current_ascii == 41){
+			current_tree = current_tree -> child;
+			while(current_tree -> state != 7){
+				current_tree = current_tree -> sibling;
+			}
+			Create_token(current_tree -> name);
+			cout << "Created a 'rparen' Token" <<endl;
+			current_tree = start_tree;
+		}
+		else if(current_ascii == 43){
+			current_tree = current_tree -> child;
+			while(current_tree -> state != 8){
+				current_tree = current_tree -> sibling;
+			}
+			Create_token(current_tree -> name);
+			cout << "Created a 'plus' Token" <<endl;
+			current_tree = start_tree;
+		}
+		else if(current_ascii == 45){
+			current_tree = current_tree -> child;
+			while(current_tree -> state != 9){
+				current_tree = current_tree -> sibling;
+			}
+			Create_token(current_tree -> name);
+			cout << "Created a 'minus' Token" <<endl;
+			current_tree = start_tree;
+		}
+		else if(current_ascii == 42){
+			current_tree = current_tree -> child;
+			while(current_tree -> state != 10){
+				current_tree = current_tree -> sibling;
+			}
+			Create_token(current_tree -> name);
+			cout << "Created a 'times' Token" <<endl;
+			current_tree = start_tree;
+		}
+		else if(current_ascii == 58){
+			current_tree = current_tree -> child;
+			while(current_tree -> state != 11){
+				current_tree = current_tree -> sibling;
+			}
+		}
+		else if(current_ascii == 46){
+			current_tree = current_tree -> child;
+			while(current_tree -> state != 13){
+				current_tree = current_tree -> sibling;
+			}
+		}
+		else if(current_ascii >= 48 && current_ascii <= 57){
+			current_tree = current_tree -> child;
+			while(current_tree -> state != 14){
+				current_tree = current_tree -> sibling;
+			}
+			if(next_ascii != 46 && (next_ascii < 57 || next_ascii > 48)){
+				Create_token(current_tree -> name);
+				cout << "Created a 'number' Token" <<endl;
+				current_tree = start_tree;
+			}
+		}
+		else if((current_ascii >= 65 && current_ascii <= 90) || (current_ascii >= 97 && current_ascii <= 122)){
+			current_tree = current_tree -> child;
+			while(current_tree -> state != 16){
+				current_tree = current_tree -> sibling;
+			}
+			if((next_ascii < 65 || next_ascii > 90) && (next_ascii < 97 || next_ascii > 122) && (next_ascii < 48 || next_ascii > 57)){
+				Create_token(current_tree -> name);
+				cout << "Created a 'id' Token" <<endl;
+				current_tree = start_tree;
+			}
+		}
+		else{
+			cout << "PARSE ERROR" << endl;
+			exit(2);
+		}
+	}
+	else if(current_tree -> state == 2){
+		if(current_ascii == 47)
+			current_tree = current_tree -> child;
+		else
+			current_tree = current_tree -> child -> sibling;
+	}
+	else if(current_tree -> state == 3){
+		if(current_ascii == 10)
+			current_tree = start_tree;
+	}
+	else if(current_tree -> state == 4){
+		if(current_ascii == 42)
+			current_tree = current_tree -> child;
+	}
+	else if(current_tree -> state == 5){
+		if(current_ascii == 47)
+			current_tree = start_tree;
+		else if(current_ascii != 42)
+			current_tree = current_tree -> child -> sibling;
+	}
+	else if(current_tree -> state == 11){
+		if(current_ascii == 61){
+			current_tree = current_tree -> child;
+			Create_token(current_tree -> name);
+			cout << "Created a 'assign' Token" <<endl;
+			current_tree = start_tree;
+		}
+		else{
+			cout << "PARSE ERROR" << endl;
+			exit(2);
+		}	
+	}
+	else if(current_tree -> state == 13){
+		if(current_ascii >= 48 && current_ascii <= 57)
+			current_tree = current_tree -> child;
+		else{
+			cout << "PARSE ERROR" << endl;
+			exit(2);
+		}
+	}
+	else if(current_tree -> state == 14){
+		if((current_ascii >= 48 && current_ascii <= 57) && ((next_ascii < 48 && next_ascii > 57) && next_ascii != 46)){
+			Create_token(current_tree -> name);
+			cout << "Created a 'number' Token" <<endl;
+		}
+		else if(current_ascii == 46)
+			current_tree = current_tree -> child;
+		
+	}
+	else if(current_tree -> state == 15){
+		if(next_ascii < 57 || next_ascii > 48){
+			Create_token(current_tree -> name);
+			cout << "Created a 'number' Token" <<endl;
+		}
+	}
+	else if(current_tree -> state == 16){
+		if((next_ascii < 65 || next_ascii > 90) && (next_ascii < 97 || next_ascii > 122) && (next_ascii < 48 || next_ascii > 57)){
+				cout << "Created a 'id' Token" <<endl;
+				current_tree = start_tree;
+			}
+	}
+}
+
+
+void Tree_Create(int state, char character[10], int terminator){
+	tree_Node *temp1 = (tree_Node*)malloc(sizeof(tree_Node));	
+	for(int i = 0; i < 10; i++)
+		temp1 -> name[i] = character[i];
+	temp1 -> state = state;
+	temp1 -> terminator = terminator;
+	temp1 -> child = NULL;
+	temp1 -> sibling = NULL;
+	if(start_tree == NULL){
+		start_tree = temp1;
+	}
+	current_tree = temp1;
+}
+
+void Tree_Process(){
+	char arr_char[10][10] = {"", "div", "lparen", "rparen", "plus", "minus", "times", "assign", "number", "id"};
 	
 	Tree_Create(1, arr_char[0], 0);
 	tmp = current_tree;
@@ -49,6 +280,7 @@ int main(int argc, char *argv[]){
 	tmp = current_tree;
 	Tree_Create(5, arr_char[0], 0);
 	tmp -> child = current_tree;
+	current_tree -> child = start_tree;
 	tmp = current_tree;
 	Tree_Create(6, arr_char[2], 1);
 	start_tree -> child -> sibling = current_tree;
@@ -76,73 +308,23 @@ int main(int argc, char *argv[]){
 	Tree_Create(16, arr_char[9], 1);
 	start_tree -> child -> sibling -> sibling -> sibling -> sibling -> sibling -> sibling -> sibling -> sibling -> sibling = current_tree;
 
-	FILE *fp;
-	fp = fopen(argv[argc - 1], "r");
-	char filename[MAX_CHAR];
+	start_tree -> child -> child -> sibling -> child -> child -> sibling = start_tree -> child -> child -> sibling;
 	
+}
 
-	if(fp == NULL){
-		cout << "Unable to open the file designated: " << argv[argc-1] << endl;
-		cout << "Ending Program" << endl;
-		return 1;
+void Create_token(char token_type[10]){
+	saved_token *temp1 = (saved_token*)malloc(sizeof(saved_token));
+	for(int i = 0; i < 10; i++){
+		temp1 -> token[i] = token_type[i];
+	}
+	temp1 -> next = NULL;
+	if(start_saved == NULL){
+		start_saved = temp1;
+		current_saved = temp1;
 	}
 	else{
-		Reading_file(argv[argc-1]);
+		current_saved -> next = temp1;
+		current_saved = temp1;
 	}
 	
-	//for later use when printing out the tokens
-	
-	/* 
-	current_saved = start_saved;
-	while(current_saved != NULL){
-		cout << current_saved -> token;
-		if(current_saved -> next != NULL){
-			cout << ", ";
-		}
-	}
-	*/
-	cout << endl;
-	
-	return 0;
-}
-
-void Reading_file(char *file){
-	char str[MAX_CHAR];
-	FILE *fp;
-	fp = fopen(file, "r");
-	
-	while(fgets(str, MAX_CHAR, fp) != NULL){
-		for(int i = 0; i < strlen(str); i++){
-			Interpreter(str[i]);
-		}
-	}
-}
-
-void Interpreter(char character){
-	if((int)character == 32)
-		cout << "space" << endl;
-	else if((int)character == 10)
-		cout << "newline" << endl;
-	else if((int)character == 9)
-		cout << "tab" << endl;
-	else if((int)character >= 48 && (int)character <= 57)
-		cout << "number" << endl;
-	else if((int)character >= 65 && (int)character <= 90 || (int)character >= 97 && (int)character <= 122)
-		cout << "letter" << endl;
-	else
-		cout << "some other symbol" << endl;
-}
-
-void Tree_Create(int state, char character[10], int terminator){
-	tree_Node *temp1 = (tree_Node*)malloc(sizeof(tree_Node));	
-	for(int i = 0; i < 10; i++)
-		temp1 -> name[i] = character[i];
-	temp1 -> state = state;
-	temp1 -> terminator = terminator;
-	temp1 -> child = NULL;
-	temp1 -> sibling = NULL;
-	if(start_tree == NULL){
-		start_tree = temp1;
-	}
-	current_tree = temp1;
 }
