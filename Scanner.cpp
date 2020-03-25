@@ -9,6 +9,9 @@
 
 using namespace std;
 
+int counter;
+int r_w[6];
+
 struct tree_Node{
 	char name[10];            //current state's name
 	int state;                //current state's number
@@ -53,6 +56,7 @@ int main(int argc, char *argv[]){
 	
 	
 	current_saved = start_saved;
+	cout << "(";
 	while(current_saved != NULL){
 		cout << current_saved -> token;
 		if(current_saved -> next != NULL){
@@ -61,7 +65,7 @@ int main(int argc, char *argv[]){
 		current_saved = current_saved -> next;
 	}
 	
-	cout << endl;
+	cout << ")" << endl;
 	
 	return 0;
 }
@@ -73,7 +77,7 @@ void Reading_file(char *file){
 	
 	while(fgets(str, MAX_CHAR, fp) != NULL){
 		for(int i = 0; i < strlen(str); i++){
-			if(str[i+1] != NULL)
+			if(str[i+1] != '\0')
 				Interpreter(str[i], str[i+1]);
 			else
 				Interpreter(str[i], -1);
@@ -88,9 +92,17 @@ void Interpreter(char character, char next){
 	cout << "Next: " << next << ": " << (int)next << endl;\
 	cout << endl;
 	*/
+	
+	char read[10] = "read";
+	char write[10] = "write";
+	
 	int current_ascii = (int)character;
 	int next_ascii = (int)next;
 	if(current_tree -> state == 1){
+		counter = 0;
+		for(int j = 0; j < 6; j++){
+			r_w[j] = -1;
+		}
 		if(current_ascii == 9 || current_ascii == 10 || current_ascii == 32)
 			current_tree = start_tree;
 		else if(current_ascii == 47){
@@ -100,7 +112,8 @@ void Interpreter(char character, char next){
 			}
 			if(next_ascii != 47 && next_ascii != 42){
 				Create_token(current_tree -> name);
-				cout << "Created a 'div' Token" <<endl;
+				//cout << "Created a 'div' Token" <<endl;
+				current_tree = start_tree;
 			}
 		}
 		else if(current_ascii == 40){
@@ -109,7 +122,7 @@ void Interpreter(char character, char next){
 				current_tree = current_tree -> sibling;
 			}
 			Create_token(current_tree -> name);
-			cout << "Created a 'lparen' Token" <<endl;
+			//cout << "Created a 'lparen' Token" <<endl;
 			current_tree = start_tree;
 		}
 		else if(current_ascii == 41){
@@ -118,7 +131,7 @@ void Interpreter(char character, char next){
 				current_tree = current_tree -> sibling;
 			}
 			Create_token(current_tree -> name);
-			cout << "Created a 'rparen' Token" <<endl;
+			//cout << "Created a 'rparen' Token" <<endl;
 			current_tree = start_tree;
 		}
 		else if(current_ascii == 43){
@@ -127,7 +140,7 @@ void Interpreter(char character, char next){
 				current_tree = current_tree -> sibling;
 			}
 			Create_token(current_tree -> name);
-			cout << "Created a 'plus' Token" <<endl;
+			//cout << "Created a 'plus' Token" <<endl;
 			current_tree = start_tree;
 		}
 		else if(current_ascii == 45){
@@ -136,7 +149,7 @@ void Interpreter(char character, char next){
 				current_tree = current_tree -> sibling;
 			}
 			Create_token(current_tree -> name);
-			cout << "Created a 'minus' Token" <<endl;
+			//cout << "Created a 'minus' Token" <<endl;
 			current_tree = start_tree;
 		}
 		else if(current_ascii == 42){
@@ -145,7 +158,7 @@ void Interpreter(char character, char next){
 				current_tree = current_tree -> sibling;
 			}
 			Create_token(current_tree -> name);
-			cout << "Created a 'times' Token" <<endl;
+			//cout << "Created a 'times' Token" <<endl;
 			current_tree = start_tree;
 		}
 		else if(current_ascii == 58){
@@ -165,9 +178,9 @@ void Interpreter(char character, char next){
 			while(current_tree -> state != 14){
 				current_tree = current_tree -> sibling;
 			}
-			if(next_ascii != 46 && (next_ascii < 57 || next_ascii > 48)){
+			if(next_ascii != 46 && (next_ascii > 57 || next_ascii < 48)){
 				Create_token(current_tree -> name);
-				cout << "Created a 'number' Token" <<endl;
+				//cout << "Created a 'number' Token" <<endl;
 				current_tree = start_tree;
 			}
 		}
@@ -176,9 +189,10 @@ void Interpreter(char character, char next){
 			while(current_tree -> state != 16){
 				current_tree = current_tree -> sibling;
 			}
+			r_w[counter] = current_ascii;
 			if((next_ascii < 65 || next_ascii > 90) && (next_ascii < 97 || next_ascii > 122) && (next_ascii < 48 || next_ascii > 57)){
 				Create_token(current_tree -> name);
-				cout << "Created a 'id' Token" <<endl;
+				//cout << "Created a 'id' Token" <<endl;
 				current_tree = start_tree;
 			}
 		}
@@ -211,7 +225,7 @@ void Interpreter(char character, char next){
 		if(current_ascii == 61){
 			current_tree = current_tree -> child;
 			Create_token(current_tree -> name);
-			cout << "Created a 'assign' Token" <<endl;
+			//cout << "Created a 'assign' Token" <<endl;
 			current_tree = start_tree;
 		}
 		else{
@@ -228,9 +242,10 @@ void Interpreter(char character, char next){
 		}
 	}
 	else if(current_tree -> state == 14){
-		if((current_ascii >= 48 && current_ascii <= 57) && ((next_ascii < 48 && next_ascii > 57) && next_ascii != 46)){
+		if((current_ascii >= 48 && current_ascii <= 57) && ((next_ascii < 48 || next_ascii > 57) && next_ascii != 46)){
 			Create_token(current_tree -> name);
-			cout << "Created a 'number' Token" <<endl;
+			//cout << "Created a 'number' Token" <<endl;
+			current_tree = start_tree;
 		}
 		else if(current_ascii == 46)
 			current_tree = current_tree -> child;
@@ -239,14 +254,32 @@ void Interpreter(char character, char next){
 	else if(current_tree -> state == 15){
 		if(next_ascii < 57 || next_ascii > 48){
 			Create_token(current_tree -> name);
-			cout << "Created a 'number' Token" <<endl;
+			//cout << "Created a 'number' Token" <<endl;
 		}
 	}
-	else if(current_tree -> state == 16){
+	else if(current_tree -> state == 16){	
 		if((next_ascii < 65 || next_ascii > 90) && (next_ascii < 97 || next_ascii > 122) && (next_ascii < 48 || next_ascii > 57)){
-				cout << "Created a 'id' Token" <<endl;
+			if(counter < 6)
+				r_w[++counter] = current_ascii;
+			if(r_w[0] ==  114 && r_w[1] == 101 && r_w[2] == 97 && r_w[3] == 100 && r_w[4] == -1){
+				Create_token(read);
+				//cout << "Created a 'read' Token" <<endl;
 				current_tree = start_tree;
 			}
+			else if(r_w[0] ==  119 && r_w[1] == 114 && r_w[2] == 105 && r_w[3] == 116 && r_w[4] == 101 && r_w[5] == -1){
+				Create_token(write);
+				//cout << "Created a 'write' Token" <<endl;
+				current_tree = start_tree;
+			}
+			else{
+				Create_token(current_tree -> name);
+				//cout << "Created a 'id' Token" <<endl;
+				current_tree = start_tree;
+			}
+		}
+		else
+			if(counter < 6)
+				r_w[++counter] = current_ascii;
 	}
 }
 
