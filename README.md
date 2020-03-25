@@ -1,5 +1,10 @@
 ## Scanner
 
-#This file is meant to take in a .txt file with a specific automata parse tree in mind to make tokens out of the text given.
+# This file is meant to take in a .txt file with a specific automata parse tree in mind to make tokens out of the text given.
 
-[Here](https://www.google.com/url?sa=i&url=https%3A%2F%2Fslideplayer.com%2Fslide%2F13247370%2F&psig=AOvVaw267IDMYULQ1WvUJI2HQJuk&ust=1585223079721000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCKDSjqnGtegCFQAAAAAdAAAAABAD) is the automaton used to make this scanner in c++
+[Here](https://imgur.com/a/1dNJ1RC) is the automaton used to make this scanner in c++
+
+
+__NOTE: THIS IS NOT A SYNTAX AUTOMATA TREE, IT WILL NOT POINT OUT SYNTAX ERRORS. IN FACT, IT DOES NOT KNOW WHAT SYNTAX IS__
+
+This means _x := /_ is a legal statement as it is the tokens (id, assign, div) to the automaton here. To a syntax tree this would be an error _in most syntaxes_
