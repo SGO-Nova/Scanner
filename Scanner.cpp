@@ -285,7 +285,7 @@ void Interpreter(char character, char next){
 }
 
 
-void Tree_Create(int state, char character[10], int terminator){
+void Tree_Create(int state, char character[10], int terminator){ //We had to add this new function from our original report as we needed another function to help construct the DFA Transition Table
 	tree_Node *temp1 = (tree_Node*)malloc(sizeof(tree_Node));	
 	for(int i = 0; i < 10; i++)
 		temp1 -> name[i] = character[i];
@@ -299,7 +299,7 @@ void Tree_Create(int state, char character[10], int terminator){
 	current_tree = temp1;
 }
 
-void Tree_Process(){
+void Tree_Process(){ //Another file created post submission of the report as we needed to design the operation order of our previously created DFA tree.
 	char arr_char[10][10] = {"", "div", "lparen", "rparen", "plus", "minus", "times", "assign", "number", "id"};
 	
 	Tree_Create(1, arr_char[0], 0);
@@ -346,7 +346,7 @@ void Tree_Process(){
 	
 }
 
-void Create_token(char token_type[10]){
+void Create_token(char token_type[10]){ //This is the last file that we had to create post report and it was designed to help give the tokens a better flow throughout the DFA tree.
 	saved_token *temp1 = (saved_token*)malloc(sizeof(saved_token));
 	for(int i = 0; i < 10; i++){
 		temp1 -> token[i] = token_type[i];
