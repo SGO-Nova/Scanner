@@ -29,7 +29,7 @@ struct saved_token{
 struct tree_Node *start_tree, *current_tree, *tmp;
 struct saved_token *start_saved, *current_saved;
 
-void Reading_file(char *file);
+void Scan(char *file);
 void Interpreter(char character, char next);
 void Tree_Create(int state, char character[10], int terminator);
 void Tree_Process();
@@ -49,7 +49,7 @@ int main(int argc, char *argv[]){
 	else{
 		Tree_Process();
 		current_tree = start_tree;
-		Reading_file(argv[argc-1]);
+		Scan(argv[argc-1]);
 	}
 	
 	//for later use when printing out the tokens
@@ -70,7 +70,7 @@ int main(int argc, char *argv[]){
 	return 0;
 }
 
-void Reading_file(char *file){
+void Scan(char *file){
 	char str[MAX_CHAR];
 	FILE *fp;
 	fp = fopen(file, "r");
